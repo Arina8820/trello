@@ -1,5 +1,5 @@
 const baseUrl =
-  import.meta.env.VITE_API_URL || "https://trello-blank-project.onrender.com";
+  import.meta.env.VITE_API_URL || "https://trello-blank-project.onrender.com/api";
 
 // Request configuration
 interface RequestOptions {

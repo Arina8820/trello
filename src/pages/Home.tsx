@@ -7,8 +7,6 @@ import {
   RocketIcon,
   PaperPlaneTiltIcon,
   BellIcon,
-  CheckCircleIcon,
-  WarningCircleIcon,
 } from "@phosphor-icons/react";
 
 interface FormValues {
@@ -16,7 +14,7 @@ interface FormValues {
 }
 
 export const Home: React.FC = () => {
-  const { toast, success, error, warning } = useToast();
+  const { toast, success, error } = useToast();
   const [inputValue, setInputValue] = useState("");
 
   const {

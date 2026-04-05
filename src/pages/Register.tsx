@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { authService } from "@/services/authService";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   EyeIcon,
@@ -13,6 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import { useState, type FC } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { apiService } from "@/services/apiService";
 
 interface FormTypes {
   username: string;
@@ -29,28 +29,43 @@ export const Register: FC = () => {
 
   const onSubmit = async (data: FormTypes) => {
     setIsLoading(true);
-    try {
-      const response = await authService.register({
-        username: data.username,
-        email: data.email,
-        password: data.password,
-      });
-
-      if (response.status === 201) {
-        success("Account created successfully! Please sign in.");
-        navigate({ to: "/auth" });
-      } else {
-        const message =
-          (response.data as { message?: string })?.message ||
-          "Registration failed";
-        error(typeof message === "string" ? message : "Registration failed");
-      }
-    } catch {
-      error("Could not connect to the server");
-    } finally {
-      setIsLoading(false);
+    const response = await apiService.post<{ message: string }>({
+      url: "/v1/auth/signup",
+      dto: data,
+    });
+    if (response.status !== 201){
+      error(response.data.message)
+    } 
+    else{
+      success(response.data.message)
+      navigate({ to: "/auth"})
     }
+
+    setIsLoading(false)
   };
+
+  //   try {
+  //     const response = await authService.register({
+  //       username: data.username,
+  //       email: data.email,
+  //       password: data.password,
+  //     });
+
+  //     if (response.status === 201) {
+  //       success("Account created successfully! Please sign in.");
+  //       navigate({ to: "/auth" });
+  //     } else {
+  //       const message =
+  //         (response.data as { message?: string })?.message ||
+  //         "Registration failed";
+  //       error(typeof message === "string" ? message : "Registration failed");
+  //     }
+  //   } catch {
+  //     error("Could not connect to the server");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <div className="flex min-h-screen items-center justify-center">

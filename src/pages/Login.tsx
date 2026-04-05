@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   EyeIcon,
   EyeSlashIcon,
@@ -10,6 +10,8 @@ import {
 } from "@phosphor-icons/react";
 import { useState, type FC } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useToast } from "@/hooks/use-toast";
+import { apiService } from "@/services/apiService";
 
 interface FormTypes {
   username: string;
@@ -17,14 +19,37 @@ interface FormTypes {
 }
 
 export const Login: FC = () => {
-  const { control, handleSubmit } = useForm<FormTypes>();
+  const{
+    control,
+    handleSubmit,
+    formState: {isSubmitting},
+  } = useForm<FormTypes>();
+
+  /* const { control, handleSubmit } = useForm<FormTypes>(); */
   const [showPassword, setShowPassword] = useState(false);
+  const {success, error} = useToast()
+  const navigate = useNavigate()
+
+  const login = async (data: FormTypes) =>{
+    const response = await apiService.post<{ message: string }>({
+      url: "/v1/auth/login",
+      dto:data,
+    })
+    if (response.status ===201){
+      success(response.data.message)
+      navigate({ to: "/projects/"})
+    }
+    else{
+      error(response.data.message)
+    }
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center">
       <form
         className="flex flex-col gap-5 rounded-2xl p-6 border border-gray-200 w-96 bg-white/10 shadow-lg"
-        onSubmit={handleSubmit((data) => console.log(data))}
+        onSubmit={handleSubmit((login))}
+        
       >
         {/* Header */}
         <div className="flex flex-col items-center gap-2 mb-1">
