@@ -30,6 +30,13 @@ export class StorageService<T> {
 
   setValue(value: T) {
     localStorage.setItem(this.KEY_STORAGE, JSON.stringify(value));
+
+  }
+
+  getDecodedToken(){
+  const token = this.getValue() as string
+  if (!token) return null;
+  return JSON.parse(atob(token.split('.')[1]));
   }
 
   hasValue() {
@@ -42,3 +49,6 @@ export class StorageService<T> {
     localStorage.removeItem(this.KEY_STORAGE);
   }
 }
+
+export const tokenStorage = new StorageService<string>("TOKEN")
+export const userStorage = new StorageService<string>("USER")

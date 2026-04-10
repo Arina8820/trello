@@ -12,6 +12,7 @@ import { useState, type FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/services/apiService";
+import { tokenStorage } from "@/services/storageService";
 
 interface FormTypes {
   username: string;
@@ -31,16 +32,17 @@ export const Login: FC = () => {
   const navigate = useNavigate()
 
   const login = async (data: FormTypes) =>{
-    const response = await apiService.post<{ message: string }>({
+    const response = await apiService.post<{token: string}>({
       url: "/v1/auth/login",
       dto:data,
     })
-    if (response.status ===201){
-      success(response.data.message)
-      navigate({ to: "/projects/"})
+    if (response.statusCode ===201){
+      success(response.message)
+      tokenStorage.setValue(response.data.token)
+      navigate({to: "/projects/"})
     }
     else{
-      error(response.data.message)
+      error(response.message)
     }
   }
 

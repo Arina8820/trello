@@ -1,4 +1,5 @@
 import { apiService } from "./apiService";
+import { tokenStorage } from "./storageService";
 
 export interface RegisterDto {
   email: string;
@@ -24,14 +25,17 @@ export interface AuthResponse {
   };
 }
 
+
 class AuthService {
+  
   async register(dto: RegisterDto) {
     return apiService.post<AuthResponse>({
       url: "/api/v1/auth/signup",
       dto,
     });
+    
   }
-
+  
   async login(dto: LoginDto) {
     return apiService.post<AuthResponse>({
       url: "/api/v1/auth/login",
@@ -41,3 +45,8 @@ class AuthService {
 }
 
 export const authService = new AuthService();
+
+
+
+
+

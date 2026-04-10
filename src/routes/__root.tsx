@@ -1,7 +1,8 @@
-import { createRootRoute, Outlet, useRouterState } from "@tanstack/react-router";
+import { createRootRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { ToastContainer } from "@/components/ui/ToastContainer";
 import { Header } from "@/components/Header";
+import { tokenStorage } from "@/services/storageService";
 
 const AUTH_ROUTES = ["/auth", "/register", "/auth/register"]
 
@@ -19,5 +20,13 @@ const RootComponent = () => {
 }
 
 export const Route = createRootRoute({
-  component: RootComponent
+  component: RootComponent,
+  beforeLoad(options){
+    if(
+      !AUTH_ROUTES.includes(options.location.pathname)
+      && !tokenStorage.hasValue()
+    ){
+      throw redirect ({to:"/auth"})
+    }
+  }
 });

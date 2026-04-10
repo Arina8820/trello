@@ -12,7 +12,8 @@ import {
 } from "@phosphor-icons/react";
 import { useState, type FC } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { apiService } from "@/services/apiService";
+import RequestResponse, { apiService } from "@/services/apiService";
+
 
 interface FormTypes {
   username: string;
@@ -27,22 +28,28 @@ export const Register: FC = () => {
   const { success, error } = useToast();
   const navigate = useNavigate();
 
+  
   const onSubmit = async (data: FormTypes) => {
     setIsLoading(true);
-    const response = await apiService.post<{ message: string }>({
+    try{
+    const response = await apiService.post<RequestResponse<null>>({
       url: "/v1/auth/signup",
       dto: data,
     });
-    if (response.status !== 201){
-      error(response.data.message)
-    } 
+
+    if (response.statusCode !== 201){
+      success(response.message)
+    }
     else{
-      success(response.data.message)
+      error(response.message)
       navigate({ to: "/auth"})
     }
-
-    setIsLoading(false)
-  };
+    } catch {
+      error("Could not connect to the server");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   //   try {
   //     const response = await authService.register({
@@ -60,11 +67,11 @@ export const Register: FC = () => {
   //         "Registration failed";
   //       error(typeof message === "string" ? message : "Registration failed");
   //     }
-  //   } catch {
-  //     error("Could not connect to the server");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
+    // } catch {
+    //   error("Could not connect to the server");
+    // } finally {
+    //   setIsLoading(false);
+    // }
   // };
 
   return (

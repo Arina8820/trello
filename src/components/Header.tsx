@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { Input } from "./ui/input";
 import { ImageBrokenIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
+import { tokenStorage } from "@/services/storageService";
 
 interface HeaderProps {}
 
@@ -11,6 +12,9 @@ export const Header: FC<HeaderProps> = () => {
   const handleSearch = () => {
     console.log(searchValue);
   };
+  
+  const decoded = tokenStorage.getDecodedToken()
+  console.log(decoded)
 
   return (
     <header className="sticky z-50 top-0 left-0 bg-white/20 py-4 border-b border-b-white backdrop-blur-2xl">
