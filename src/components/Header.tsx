@@ -3,18 +3,17 @@ import { Input } from "./ui/input";
 import { ImageBrokenIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
 import { tokenStorage } from "@/services/storageService";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface HeaderProps {}
 
 export const Header: FC<HeaderProps> = () => {
   const [searchValue, setSearchValue] = useState<string>("");
+  const {user, isLoading} = useAuth();
 
   const handleSearch = () => {
     console.log(searchValue);
   };
-  
-  const decoded = tokenStorage.getDecodedToken()
-  console.log(decoded)
 
   return (
     <header className="sticky z-50 top-0 left-0 bg-white/20 py-4 border-b border-b-white backdrop-blur-2xl">
@@ -39,8 +38,8 @@ export const Header: FC<HeaderProps> = () => {
             <ImageBrokenIcon className="text-background" weight="duotone" />
           </div>
           <div>
-            <h3>Username</h3>
-            <p className="text-muted-foreground">useremail@test.com</p>
+            <h3 className="text-ellipsis max-w-16 overflow-hidden whitespace-nowrap" >{isLoading ? "Loading..." : user?.username || "Guest"}</h3>
+            <p className="text-muted-foreground">{isLoading ? "Loading..." : user?.email || "Guest@example.com"}</p>
           </div>
         </div>
       </div>

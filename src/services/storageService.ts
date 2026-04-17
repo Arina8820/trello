@@ -33,12 +33,6 @@ export class StorageService<T> {
 
   }
 
-  getDecodedToken(){
-  const token = this.getValue() as string
-  if (!token) return null;
-  return JSON.parse(atob(token.split('.')[1]));
-  }
-
   hasValue() {
     const value = localStorage.getItem(this.KEY_STORAGE);
     if (value === null || value === undefined) return false;

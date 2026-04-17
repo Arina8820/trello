@@ -39,6 +39,7 @@ export const Login: FC = () => {
     if (response.statusCode ===201){
       success(response.message)
       tokenStorage.setValue(response.data.token)
+      apiService.saveBearerToken(response.data.token)
       navigate({to: "/projects/"})
     }
     else{
